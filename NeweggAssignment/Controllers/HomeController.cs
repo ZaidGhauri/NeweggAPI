@@ -4,7 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NeweggAssignment.Models;
+using Newegg.Marketplace.SDK;
+using Newegg.Marketplace.SDK.Base;
+using Newegg.Marketplace.SDK.Order;
+using Newegg.Marketplace.SDK.Order.Model;
 
 namespace NeweggAssignment.Controllers
 {
@@ -12,7 +15,22 @@ namespace NeweggAssignment.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            APIConfig config = APIConfig.FromJsonFile("newegg");
+            APIClient client = new APIClient(config);
+            OrderCall ordercall = new OrderCall(client);
+            var requestModel = new GetOrderInformationRequest()
+            {
+                OperationType = "GetOrderInfoRequest",
+                RequestBody = new GetOrderInformationRequestBody() {
+                    PageIndex = 0,
+                    PageSize = 20,
+                    RequestCriteria = new GetOrderInformationRequestCriteria() {
+                        
+                    }
+                }
+            };
+            var response = ordercall.GetOrderInformation(304, requestModel);
+            return View(response);
         }
 
         public IActionResult About()
